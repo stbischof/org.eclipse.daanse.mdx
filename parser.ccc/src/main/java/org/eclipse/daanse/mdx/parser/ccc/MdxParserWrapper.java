@@ -76,7 +76,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
 
         } catch (ParseException pe) {
             logger.error("Failed to parse MDX statement", pe);
-            throw new MdxParserException(pe.getMessage(), pe,  pe.getToken().getBeginLine(), pe.getToken().getBeginColumn());
+            throw toMdxParserException(pe);
         } catch (Exception e) {
             logger.error("Failed to parse MDX statement", e);
             throw new MdxParserException(e);
@@ -84,6 +84,15 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             dump();
         }
 
+    }
+
+    /** ParseException may carry no token (message-only constructor). */
+    private static MdxParserException toMdxParserException(ParseException pe) {
+        if (pe.getToken() != null) {
+            return new MdxParserException(pe.getMessage(), pe, pe.getToken().getBeginLine(),
+                    pe.getToken().getBeginColumn());
+        }
+        return new MdxParserException(pe.getMessage(), pe);
     }
 
     private void dump() {
@@ -187,10 +196,13 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
 
     private <T> T parse(String what, ParseAction<T> action) throws MdxParserException {
         try {
-            logger.debug("Parsing SELECT statement");
+            logger.debug("Parsing {}", what);
             T result = action.run();
             logger.debug("Successfully parsed " + what);
             return result;
+        } catch (ParseException pe) {
+            logger.error("Failed to parse  " + what, pe);
+            throw toMdxParserException(pe);
         } catch (Exception e) {
             logger.error("Failed to parse  " + what, e);
             throw new MdxParserException("Failed to parse " + what, e);

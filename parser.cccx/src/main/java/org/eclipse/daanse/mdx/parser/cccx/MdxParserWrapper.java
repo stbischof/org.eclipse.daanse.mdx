@@ -76,7 +76,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
 
         } catch (Exception e) {
             logger.error("Failed to parse MDX statement", e);
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -96,13 +96,22 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
         }
     }
 
+    /** Keeps the token position when available; ParseException may carry no token. */
+    private static MdxParserException wrap(Exception e) {
+        if (e instanceof ParseException pe && pe.getToken() != null) {
+            return new MdxParserException(pe.getMessage(), pe, pe.getToken().getBeginLine(),
+                    pe.getToken().getBeginColumn());
+        }
+        return new MdxParserException(e);
+    }
+
     @Override
     public SelectQueryAsteriskClause parseSelectQueryAsteriskClause() throws MdxParserException {
         try {
             delegate.SelectQueryAsteriskClause();
             return (SelectQueryAsteriskClause) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -119,7 +128,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             return result;
         } catch (Exception e) {
             logger.error("Failed to parse SELECT statement", e);
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -131,7 +140,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.SelectQueryAxesClause();
             return (SelectQueryAxesClause) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -147,7 +156,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             return result;
         } catch (Exception e) {
             logger.error("Failed to parse MDX expression", e);
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -159,7 +168,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.SelectCubeClause();
             return (SelectCubeClause) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -171,7 +180,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.SelectWithClause();
             return (SelectWithClause) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -183,7 +192,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.SelectQueryAxisClause();
             return (SelectQueryAxisClause) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -195,7 +204,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.SelectSlicerAxisClause();
             return Optional.of((SelectSlicerAxisClause) delegate.peekNode());
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -207,7 +216,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.SelectCellPropertyListClause();
             return (SelectCellPropertyListClause) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -219,7 +228,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.DrillthroughStatement();
             return (DrillthroughStatement) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -231,7 +240,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.ExplainStatement();
             return (ExplainStatement) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -243,7 +252,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             return delegate.parseReturnItems();
 
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -255,7 +264,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.MemberPropertyDefinition();
             return (MemberPropertyDefinition) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -267,7 +276,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.SelectDimensionPropertyListClause();
             return (SelectDimensionPropertyListClause) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -280,7 +289,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             return (RefreshStatement) delegate.peekNode();
 
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -293,7 +302,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             return (UpdateStatement) delegate.peekNode();
 
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
@@ -305,7 +314,7 @@ public class MdxParserWrapper implements org.eclipse.daanse.mdx.parser.api.MdxPa
             delegate.DMVStatement();
             return (DMVStatement) delegate.peekNode();
         } catch (Exception e) {
-            throw new MdxParserException(e);
+            throw wrap(e);
         } finally {
             dump();
         }
